@@ -23,13 +23,13 @@
 			assert(modes[m], 'mode does not exist ' + m);
 			var mode = modes[m];
 			var url = '#' + mode;
-			var fileName = mode + '.md';
+			var fileName = mode + '.html';
 			$.get(fileName, function(data, status, xhr){
 				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
 				//TODO: some analyis of file to get the title.
 				history.pushState({mode: m}, 'title', url);
 				console.log('mode complete: ' + modes[m]);
-				var html = markdown.toHTML(data);
+				var html = data; //markdown.toHTML(data);
 				$('#output').html(html);
 				mode = m;
 			});

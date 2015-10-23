@@ -1,0 +1,20 @@
+<div id="about"></div>
+<script>
+	(function(){
+		function inferDataFromURL(url){
+			var data = url.split('?')[2];
+			assert (data, 'data not available');
+			return data;
+		}
+		function setData(data){
+			$('#about').html(data);
+		}
+		function main(){
+			console.log('hello from about');
+			var data = inferDataFromURL(window.location.href);
+			setData(data);
+		}
+		main();
+	})();
+
+</script>
