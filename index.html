@@ -7,8 +7,7 @@
 <body>
 	<h1>Site</h1>
 	<ol class='nav'>
-		<li><a href="#hello">hello</a></li>
-		<li><a href="#about">about</a></li>
+
 	</ol>
 	
 	<script src="node_modules/jquery/dist/jquery.js"></script>
@@ -27,13 +26,17 @@
 				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
 				//TODO: some analyis of file to get the title.
 				history.pushState({mode: m}, 'title', url);
-				console.log('mode complete' + m);
+				console.log('mode complete: ' + modes[m]);
 				mode = m;
 			});
 		}
 
-		function main(){
-			console.log('hello world',$);
+		function initializeNav(){
+			var $nav = $('.nav');
+			$nav.html('');
+			modes.forEach(function(mode){
+				$('<li><a href="#' + mode + '">'+mode+'</a></li>').appendTo($nav);
+			});
 			$('body').on('click', '.nav a', function(e){
 				console.log(this);
 				var requestedMode = this.href.split('#')[1];
@@ -42,6 +45,11 @@
 				setMode(index);
 				return false;
 			});
+		}
+
+		function main(){
+			console.log('hello world',$);
+			initializeNav();
 			setMode(0);
 		}
 		main();
