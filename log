@@ -35,3 +35,21 @@ Of particular interest is 10259 where I decided to encode 10258 as a script. I h
 So what are we building? Well. My thought was to build a single page app for a blog. But really focusing on the data, first, particularly in relationship to *files*. Not going for speed of development, but rather thoughtfulness of development.
 
 10267 is also of interest because that's where I found I wanted something like GitHub Desktop as a git client because it allows me to cherry pick commits, down to the line. However, I realized that if I stay focused on achieving one thing at a time, then I don't need it.
+
+#
+
+Right now I want to consolidate what I know:
+So far, this is a static web page program that you can run with 'run.sh' (at least on OSX).
+
+#
+
+Next I want to write a function that loads "sibling" resources. My biggest risk is distraction.
+
+The most common way to write this function would be to a) install jquery, b) use a static server.
+
+For me, the easiest way there is through `npm install jquery` and `python -m SimpleHTTPServer 8888` plus the necessary modification to index.html and run.sh. 
+
+(There are other ways: `bower install jquery` + `npm install express` or `npm install -g simpatico` + `simpatico run` )
+
+#
+

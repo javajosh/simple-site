@@ -5,9 +5,13 @@
 	<title>Basic Shell</title>
 </head>
 <body>
+	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script>
 		function main(){
-			console.log('hello world');
+			console.log('hello world',$);
+			$.get('hello.md', function(data, status, xhr){
+				console.log(data);
+			});
 		}
 		main();
 	</script>
