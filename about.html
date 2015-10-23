@@ -1,15 +1,23 @@
 <div id="about"></div>
 <script>
 	(function(){
+		var name = 'about';
+
+		function transform(data){
+			return data.join(',');
+		}
 		function setData(data){
-			$('#about').html(data);
+			var transformed = transform(data);
+			$('#' + name).html(transformed);
 		}
-		function main(){
-			console.log('hello from about');
-			var data = getDataFromURL(window.location.href);
+		function main(data){
+			var requestedMode = getModeFromURL(window.location.href);
+			assert(requestedMode === name, 'This mode (' + name +') is not the mode requested: ' + requestedMode );
+
 			setData(data);
+			console.info('component ' + name + ' started with data:', data);
 		}
-		main();
+		main(getDataFromURL(window.location.href));
 	})();
 
 </script>

@@ -21,12 +21,12 @@
 		}
 		function setMode(m, d){
 			assert(modes[m], 'mode does not exist ' + m);
+			assert(typeof d=== undefined || $.isArray(d), 'd must be an array');
 			var mode = modes[m];
-			var url = '#' + mode + (d ? '?' + d : '');
-			
-
+			var url = '?' + mode + ',' + d.join(',');
 			var fileName = mode + '.html';
 			var title = 'Mode: ' + mode;
+
 			$.get(fileName, function(data, status, xhr){
 				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
 				//TODO: some analyis of file to get the title.
@@ -37,42 +37,48 @@
 				mode = m;
 			});
 		}
-
 		function initializeNavLinks(){
 			var $nav = $('.nav');
 			$nav.html('');
 			modes.forEach(function(mode, i){
-				$('<li><a href="#' + mode + '?'+ i +'">'+ mode +'</a></li>').appendTo($nav);
+				$('<li><a href="?' + mode + ','+ (i%2 ? i : '') +'">'+ mode +'</a></li>').appendTo($nav);
 			});
 			$('body').on('click', '.nav a', function(e){
-				var index = inferModeIndexFromURL(this.href);
+				var index = getModeIndexFromURL(this.href);
 				var data = getDataFromURL(this.href);
 				setMode(index, data);
 				return false;
 			});
 		}
+		function getArgsFromURL(url){
+			var result = [];
+			//we only care about what's after the ?
+			if (url.split('?').length !== 0){
+				result = url.split('?')[1].split(',');
+			} 
+			return result;
+		}
+		function getModeIndexFromModeName(m){
+			var index = modes.indexOf(m);
+			assert (index !== -1, 'mode not available ' + m );
+			return index;
+		}
+		function getModeIndexFromURL(url){
+			return getModeIndexFromModeName(getModeFromURL(url));
+		}
 		function getModeFromURL(url){
-			return url.split('#')[1].split('?')[0];
+			return getArgsFromURL(url)[0];
 		}
 		function getDataFromURL(url){
-			return url.split('#')[1].split('?')[1];
+			return getArgsFromURL(url).slice(1);
 		}
-
-		function inferModeIndexFromURL(url){
-				var requestedMode = getModeFromURL(url);
-				var index = modes.indexOf(requestedMode);
-				assert (index !== -1, 'mode not available ' + requestedMode );
-				return index;
-		}
-
-		function main(){
-			console.log('hello world',$);
+		function main(args){
 			initializeNavLinks();
-			var inferModeIndex = inferModeIndexFromURL(window.location.href);
-			var initialData = getDataFromURL(window.location.href);
-			setMode(inferModeIndex, initialData);
+			var initialModeIndex = getModeIndexFromModeName(args[0]);
+			var initialData = args.slice(1);
+			setMode(initialModeIndex, initialData);
 		}
-		main();
+		main(getArgsFromURL(window.location.href));
 	</script>
 </body>
 </html>
