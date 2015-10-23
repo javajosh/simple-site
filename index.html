@@ -9,8 +9,10 @@
 	<ol class='nav'>
 
 	</ol>
+	<div id="output"></div>
 	
 	<script src="node_modules/jquery/dist/jquery.js"></script>
+	<script src="node_modules/markdown/lib/markdown.js"></script>
 	<script>
 		var mode = 0;
 		var modes = ['hello','about'];
@@ -27,6 +29,8 @@
 				//TODO: some analyis of file to get the title.
 				history.pushState({mode: m}, 'title', url);
 				console.log('mode complete: ' + modes[m]);
+				var html = markdown.toHTML(data);
+				$('#output').html(html);
 				mode = m;
 			});
 		}
