@@ -5,6 +5,12 @@
 	<title>Basic Shell</title>
 </head>
 <body>
+	<h1>Site</h1>
+	<ol class='nav'>
+		<li><a href="#hello">hello</a></li>
+		<li><a href="#about">about</a></li>
+	</ol>
+	
 	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script>
 		var mode = 0;
@@ -14,9 +20,12 @@
 		}
 		function setMode(m){
 			assert(modes[m], 'mode does not exist ' + m);
-			var fileName = modes[m] + '.md';
-			var url = '?' + fileName;
+			var mode = modes[m];
+			var url = '#' + mode;
+			var fileName = mode + '.md';
 			$.get(fileName, function(data, status, xhr){
+				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
+				//TODO: some analyis of file to get the title.
 				history.pushState({mode: m}, 'title', url);
 				console.log('mode complete' + m);
 				mode = m;
@@ -25,6 +34,14 @@
 
 		function main(){
 			console.log('hello world',$);
+			$('body').on('click', '.nav a', function(e){
+				console.log(this);
+				var requestedMode = this.href.split('#')[1];
+				var index = modes.indexOf(requestedMode);
+				assert (index !== -1, 'mode not available ' + requestedMode );
+				setMode(index);
+				return false;
+			});
 			setMode(0);
 		}
 		main();
