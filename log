@@ -1,0 +1,37 @@
+A personal log of thoughts. I will endeavor to keep it one thought per line, and never delete lines, and try to edit them as little as possible.
+This project started with an idea and a terminal, and these commands:
+
+10243  git init simple-site
+10244  cd simple-site
+10245  touch index.html
+10246  touch hello.md
+10247  touch about.md
+10248  git commit -am 'Basic Static file structure'
+10249  git add .
+10250  git commit -am 'Basic Static file structure'
+10251  ls
+10252  subl .
+10253  git commit -m 'Its an empty page that executes a function when it loads'
+10254  ls
+10255  git add .
+10256  git status
+10257  git commit -m 'A basic shell that just executes a function after document and resource load'
+10258  open index.html
+10259  touch run.sh
+10260  chmod
+10261  man chmod
+10262  chmod 700 run.sh
+10263  ls
+10264  echo "open index.html" > run.sh
+10265  ./run.sh
+10266  git status
+10267  git add run.sh
+10268  touch log
+
+All of this (and a lot more in Sublime) to produce a file structure with file contents that *do what I want*. At this point in time I just want a hello world printed in the browser console on load. This establishes a reasonable baseline for development.
+
+Of particular interest is 10259 where I decided to encode 10258 as a script. I have essentially elevated the visibility and increased the liklihood that 10258 will be invoked in the future by developers (namely, me). A similar effect can be achieved with build and packaging systems, where people are trained to run mvn compile or npm init when they see a build.xml or a package.json, respectively. By contrast, 'run.sh' seems, at first, ambiguous. And yet, I believe, that it should not be.
+
+So what are we building? Well. My thought was to build a single page app for a blog. But really focusing on the data, first, particularly in relationship to *files*. Not going for speed of development, but rather thoughtfulness of development.
+
+10267 is also of interest because that's where I found I wanted something like GitHub Desktop as a git client because it allows me to cherry pick commits, down to the line. However, I realized that if I stay focused on achieving one thing at a time, then I don't need it.
