@@ -15,8 +15,11 @@
 		function setMode(m){
 			assert(modes[m], 'mode does not exist ' + m);
 			var fileName = modes[m] + '.md';
+			var url = '?' + fileName;
 			$.get(fileName, function(data, status, xhr){
-				console.log(data);
+				history.pushState({mode: m}, 'title', url);
+				console.log('mode complete' + m);
+				mode = m;
 			});
 		}
 
