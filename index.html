@@ -7,11 +7,22 @@
 <body>
 	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script>
-		function main(){
-			console.log('hello world',$);
-			$.get('hello.md', function(data, status, xhr){
+		var mode = 0;
+		var modes = ['hello','about'];
+		function assert(p, msg){
+			if (!p) throw 'assertion failed: ' + msg;
+		}
+		function setMode(m){
+			assert(modes[m], 'mode does not exist ' + m);
+			var fileName = modes[m] + '.md';
+			$.get(fileName, function(data, status, xhr){
 				console.log(data);
 			});
+		}
+
+		function main(){
+			console.log('hello world',$);
+			setMode(0);
 		}
 		main();
 	</script>
