@@ -22,7 +22,10 @@
 		function setMode(m){
 			assert(modes[m], 'mode does not exist ' + m);
 			var mode = modes[m];
-			var url = '#' + mode;
+			var data = getDataFromURL(window.location.href);
+			var url = '#' + mode + '?' + data;
+			
+
 			var fileName = mode + '.html';
 			var title = 'Mode: ' + mode;
 			$.get(fileName, function(data, status, xhr){
@@ -39,18 +42,24 @@
 		function initializeNavLinks(){
 			var $nav = $('.nav');
 			$nav.html('');
-			modes.forEach(function(mode){
-				$('<li><a href="#' + mode + '">'+mode+'</a></li>').appendTo($nav);
+			modes.forEach(function(mode, i){
+				$('<li><a href="#' + mode + '?'+ i +'">'+ mode +'</a></li>').appendTo($nav);
 			});
 			$('body').on('click', '.nav a', function(e){
-				var index = inferModeFromURL(this.href);
+				var index = inferModeIndexFromURL(this.href);
 				setMode(index);
 				return false;
 			});
 		}
+		function getModeFromURL(url){
+			return url.split('#')[1].split('?')[0];
+		}
+		function getDataFromURL(url){
+			return url.split('#')[1].split('?')[1];
+		}
 
-		function inferModeFromURL(url){
-				var requestedMode = url.split('#')[1];
+		function inferModeIndexFromURL(url){
+				var requestedMode = getModeFromURL(url);
 				var index = modes.indexOf(requestedMode);
 				assert (index !== -1, 'mode not available ' + requestedMode );
 				return index;
@@ -59,7 +68,7 @@
 		function main(){
 			console.log('hello world',$);
 			initializeNavLinks();
-			var initialMode = inferModeFromURL(window.location.href);
+			var initialMode = inferModeIndexFromURL(window.location.href);
 			setMode(initialMode);
 		}
 		main();
