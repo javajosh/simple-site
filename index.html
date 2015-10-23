@@ -19,11 +19,10 @@
 		function assert(p, msg){
 			if (!p) throw 'assertion failed: ' + msg;
 		}
-		function setMode(m){
+		function setMode(m, d){
 			assert(modes[m], 'mode does not exist ' + m);
 			var mode = modes[m];
-			var data = getDataFromURL(window.location.href);
-			var url = '#' + mode + '?' + data;
+			var url = '#' + mode + (d ? '?' + d : '');
 			
 
 			var fileName = mode + '.html';
@@ -47,7 +46,8 @@
 			});
 			$('body').on('click', '.nav a', function(e){
 				var index = inferModeIndexFromURL(this.href);
-				setMode(index);
+				var data = getDataFromURL(this.href);
+				setMode(index, data);
 				return false;
 			});
 		}
@@ -68,8 +68,9 @@
 		function main(){
 			console.log('hello world',$);
 			initializeNavLinks();
-			var initialMode = inferModeIndexFromURL(window.location.href);
-			setMode(initialMode);
+			var inferModeIndex = inferModeIndexFromURL(window.location.href);
+			var initialData = getDataFromURL(window.location.href);
+			setMode(inferModeIndex, initialData);
 		}
 		main();
 	</script>
