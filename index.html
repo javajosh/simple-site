@@ -24,10 +24,11 @@
 			var mode = modes[m];
 			var url = '#' + mode;
 			var fileName = mode + '.html';
+			var title = 'Mode: ' + mode;
 			$.get(fileName, function(data, status, xhr){
 				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
 				//TODO: some analyis of file to get the title.
-				history.pushState({mode: m}, 'title', url);
+				history.pushState({mode: m}, title, url);
 				console.log('mode complete: ' + modes[m]);
 				var html = data; //markdown.toHTML(data);
 				$('#output').html(html);
