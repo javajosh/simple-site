@@ -53,8 +53,10 @@ For me, the easiest way there is through `npm install jquery` and `python -m Sim
 
 #
 
-PRE: Okay, so I've just written a simple navigation system that does XHR and update the URL. So far, it always initializes to mode 0; let's change it so that it initializes to whichever mode is actually in the URL.
+Okay, so I've just written a simple navigation system that does XHR and update the URL. So far, it always initializes to mode 0; let's change it so that it initializes to whichever mode is actually in the URL.
 
-POST: Well, that went very well. I was happy to reuse code in inferModeFromURL(). What trouble is looming? The need to pass more data around.
+Well, that went very well. I was happy to reuse code in inferModeFromURL(). What trouble is looming? The need to pass more data around.
 
+#
 
+So it's working with data, but I'm still not satisfied. The whole thing seems very brittle and not very flexible. I suspect that I will either end up adding or recreating something like jquery bbq. For one thing, I dislike the way the URLs _look_, and making that change would require very careful rethinking of a lot of code. The other thing that bothers me is that the URL is really, truly the repository of special information, and 'about.html' is actually reading data out of it.
