@@ -53,3 +53,8 @@ For me, the easiest way there is through `npm install jquery` and `python -m Sim
 
 #
 
+PRE: Okay, so I've just written a simple navigation system that does XHR and update the URL. So far, it always initializes to mode 0; let's change it so that it initializes to whichever mode is actually in the URL.
+
+POST: Well, that went very well. I was happy to reuse code in inferModeFromURL(). What trouble is looming? The need to pass more data around.
+
+

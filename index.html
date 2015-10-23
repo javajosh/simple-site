@@ -31,26 +31,31 @@
 			});
 		}
 
-		function initializeNav(){
+		function initializeNavLinks(){
 			var $nav = $('.nav');
 			$nav.html('');
 			modes.forEach(function(mode){
 				$('<li><a href="#' + mode + '">'+mode+'</a></li>').appendTo($nav);
 			});
 			$('body').on('click', '.nav a', function(e){
-				console.log(this);
-				var requestedMode = this.href.split('#')[1];
-				var index = modes.indexOf(requestedMode);
-				assert (index !== -1, 'mode not available ' + requestedMode );
+				var index = inferModeFromURL(this.href);
 				setMode(index);
 				return false;
 			});
 		}
 
+		function inferModeFromURL(url){
+				var requestedMode = url.split('#')[1];
+				var index = modes.indexOf(requestedMode);
+				assert (index !== -1, 'mode not available ' + requestedMode );
+				return index;
+		}
+
 		function main(){
 			console.log('hello world',$);
-			initializeNav();
-			setMode(0);
+			initializeNavLinks();
+			var initialMode = inferModeFromURL(window.location.href);
+			setMode(initialMode);
 		}
 		main();
 	</script>
