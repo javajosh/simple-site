@@ -60,3 +60,7 @@ Well, that went very well. I was happy to reuse code in inferModeFromURL(). What
 #
 
 So it's working with data, but I'm still not satisfied. The whole thing seems very brittle and not very flexible. I suspect that I will either end up adding or recreating something like jquery bbq. For one thing, I dislike the way the URLs _look_, and making that change would require very careful rethinking of a lot of code. The other thing that bothers me is that the URL is really, truly the repository of special information, and 'about.html' is actually reading data out of it.
+
+Okay so I feel like things are going okay. Not perfectly okay, because for example my data parse doesn't know how to handle numbers! I'm also not entirely happy with the fact that components are loaded so late - it would be nice if they loaded all at once, and then took action in response to the user. But certainly the first component has a priviledged position in that it allows the user to navigate between activities - much like an operating system. The activities themselves tend to handle secondary navigation, particularly through pagination. I'm going to make a branch called "loadonstart" where the components all load on start.
+
+
