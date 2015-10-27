@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="invention.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+</head>
+<body>
+  <div id="ui-1">
+    <button onclick="s(inc,app,'i',0)">Push Me +</button>
+    <button onclick="s(dec,app,'i',0)">Push Me -</button>
+    <button onclick="s(add3,app,'i',0)">Push Me +3</button>
+    <button onclick="back(app)">back</button>
+    <button onclick="forward(app)">forward</button>
+    <button onclick="s(addUser,app,'user',0)">Add User</button>
+    <button onclick="s(removeUser,app,'user',0)">Rem User</button>
+    <div class=output>0</div>
+  </div>
+  <div id="ui-2">
+    <button onclick="s(inc,app,'i',1)">Push Me +</button>
+    <button onclick="s(dec,app,'i',1)">Push Me -</button>
+    <button onclick="s(add3,app,'i',1)">Push Me +3</button>
+    <button onclick="back(app)">back</button>
+    <button onclick="forward(app)">forward</button>
+    <button onclick="s(addUser,app,'user',1)">Add User</button>
+    <button onclick="s(removeUser,app,'user',1)">Rem User</button>
+    <div class=output>0</div>
+  </div>
+</body>
+</html>
