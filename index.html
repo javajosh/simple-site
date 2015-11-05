@@ -5,6 +5,7 @@
 	<title>Function Idea</title>
 	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script src="node_modules/markdown/lib/markdown.js"></script>
+	<script src="deparam.js"></script>
 </head>
 <body>
 	<h1>Function Idea</h1>
@@ -14,21 +15,31 @@
 
 	<p>First things first, some simple test code. What are we talking about?</p>
 	<script>
-
 		function foobar(o){
 			console.log('foobar()', o);
 		}
-
 	</script>
 	<p>Okay we've defined a new function, <i>foobar()</i>, that takes no arguments and just prints out it's own name to the console. Let's start by invoking it with an object.</p>
 	<script>
+		function equals(a,b){
+			assert(typeof a === 'object');
+			assert(typeof b === 'object');
+			var a1 = JSON.stringify(a);
+			var b1 = JSON.stringify(b);
+			return a1 == b1;
+		}
 		function assert(p, msg){if (!p) throw 'assertion failed: ' + msg;}
-		function invoke(o){
+		function invoke(o, isHistory){
 			assert(typeof o === 'object', 'invoke only takes objects');
 			assert(typeof o.f === 'string', 'invoke object requires a string f parameter');
 			assert(typeof window[o.f] === 'function', 'function not found ' + o.f);
+			if (!isHistory) assert(!equals(o,history.state), 'redundant state');
+
 			var f = window[o.f];
 			f(o);
+			
+			if (!isHistory) history.pushState(o, JSON.stringify(o), '?' + $.param(o));
+			
 		}
 	</script>
 	<div onclick="eval(arguments[0].target.innerHTML)">
@@ -37,6 +48,69 @@
 		<button>invoke({f:'nonsense'})</button>
 		<button>invoke({f:'foobar'})</button>
 	</div>
-	<p>Okay, that worked great. Now let's try converting a string to an object like this one. We're probably better off using a library for this, like deparam.</p>
+	<p>Okay, that worked great. Now we need a way to get an object in and out of a URL. The most general way to do this is with jQuery BBQ (or just param/deparam)</p>
+	<script>
+		//Let's give param and deparam a whirl.
+		var str = $.param({f:'nonsense', a:1});
+		var obj = $.deparam(str, true);
+		console.log(str, obj);
+	</script>
+	<script>
+		var count = 0;
+		function counter(o){
+			assert(typeof o.i === 'number', 'counter only takes numbers');
+			assert(o.i > 0, 'counter only takes positive numbers');
+			count += o.i;
+			console.log(count);
+		}
+	</script>
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke({f:'counter'})</button>
+		<button>invoke({f:'counter', i:'a'})</button>
+		<button>invoke({f:'counter', i:-1})</button>
+		<button>invoke({f:'counter', i:1})</button>
+		<button>invoke({f:'counter', i:10})</button>
+	</div>
+	<p>This sort of works, but it's a bad example of API design. The state of the page is not recoverable from these objects! We'd do better with an explicit <i>set</i> style function.</p>
+	<script>
+		function set(o){
+			assert(typeof o.key === 'string', 'key required');
+			assert(typeof o.value !== 'undefined', 'value required');
+			window[o.key] = o.value;
+			console.log(o.key, 'set to', o.value);
+		}
+	</script>
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke({f:'set'})</button>
+		<button>invoke({f:'set', key:1})</button>
+		<button>invoke({f:'set', key: 'a'})</button>
+		<button>invoke({f:'set', key: 'a', value: 1})</button>
+		<button>invoke({f:'set', key: 'a', value: 'foo'})</button>
+	</div>
+	<p>That's better. Next thing is to support the back button.</p>
+	<script>
+		window.onpopstate = function(e){
+			console.log(e);
+			invoke(e.state, true);
+		}
+	</script>
+	<p>For an SPA, the function we want to invoke is a view state with some parameter that will help an ajax call get the rest of the data we need. This is simple when we only have a single view state.</p>
+	<script>
+		var users = [{name: 'alice'},{name: 'bob'}];
+		function user(o){
+			assert(typeof o.id === 'number', 'user requires a numeric id');
+			assert(o.id < users.length, 'id must be a valid index < user length: ' + users.length);
+			var user = users[o.id]; //get
+			console.log(user); //render
+		}
+	</script>
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke({f:'user'})</button>
+		<button>invoke({f:'user', id:-1})</button>
+		<button>invoke({f:'user', id: 3})</button>
+		<button>invoke({f:'user', id: 0})</button>
+		<button>invoke({f:'user', id: 1})</button>
+	</div>
+
 </body>
 </html>
