@@ -162,16 +162,18 @@
 			if (tests.length === 0) results = users;
 
 			//run every test on every user
+			//this would normally run on the server because it requires access to every user.
 			for (var i = 0; i < users.length; i++) {
 				var user = users[i];
 				var passedAll = true;
 				for (var j = 0; j < tests.length; j++) {
 					passedAll = passedAll && tests[j](user);
+					if (!passedAll) break;
 				};
 				if (passedAll) results.push(user);
 			};
-			console.log(tests, results);
 
+			console.log(tests, results); //render
 		}
 	</script>
 	<div onclick="eval(arguments[0].target.innerHTML)">
