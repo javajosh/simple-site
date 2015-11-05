@@ -135,7 +135,7 @@
 		var matches = regExp.test(name);
 		
 		function search(o){
-			
+
 			var tests = [];
 			var results = [];
 			if (o.name) {
@@ -193,14 +193,42 @@
 		console.log(url, o1);
 		invoke(o1);
 	</pre>
+
+
+	<p>Well that's cool because you can <i>type</i> new states into the URL and they do exactly what you expect. For the future I'd like to write a function that infers the 'f' parameter from the names of the other parameters. I'd also like to think more about caching - not only adding data to the pushState object, but also keeping data around in the browser for a while. (This is a kind of memoization of search).</p>
+
+	<p>How do we model an SPA 'internal navigation event'? Clearly it will have a URL associated with it. The <i>meaning</i> of the "navigation event" is driven by card-stacking/tab/radio-button style visualization. That is, our UI focuses the user on a single component. There would be a (small) set of functions, each of which is associated with an element, and each of which 'mutes' the others. To figure this out, let's define two regions: an always visible collection of buttons, and an output region that can only show one thing at a time.</p>
+
+	<div id="output"></div>
+
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke({f:'a'})</button>
+		<button>invoke({f:'b', name:'bob'})</button>
+		<button>invoke({f:'c', name:'a.*'})</button>
+		<button>invoke({f:'d', minWeight: 110})</button>
+	</div>
+	<script>
+		function a(){
+			$('#output').html('Hello a');
+		}
+		function b(){
+			$('#output').html('Hello b');
+		}
+		function c(){
+			$('#output').html('Hello c');
+		}
+		function d(){
+			$('#output').html('Hello d');
+		}
+	</script>
+	<p>These simple functions are symbolic of the side-effects we expect from calling them. Note that for initial page load stuff to work, invoke(o1) must be called after these functions are defined. That's because script tags are, apparently, subtly different scopes.</p>
+
+
 	<script>
 		var url = window.location.search.slice(1);
 		var o1 = $.deparam(url, true);
 		console.log(url, o1);
 		invoke(o1);
 	</script>
-
-	<p>Well that's cool because you can <i>type</i> new states into the URL and they do exactly what you expect. For the future I'd like to write a function that infers the 'f' parameter from the names of the other parameters. I'd also like to think more about caching - not only adding data to the pushState object, but also keeping data around in the browser for a while. (This is a kind of memoization of search).</p>
-
 </body>
 </html>
