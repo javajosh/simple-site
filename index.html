@@ -21,6 +21,7 @@
 	</script>
 	<p>Okay we've defined a new function, <i>foobar()</i>, that takes no arguments and just prints out it's own name to the console. Let's start by invoking it with an object.</p>
 	<script>
+		var forbidRedundantState = true;
 		function equals(a,b){
 			assert(typeof a === 'object');
 			assert(typeof b === 'object');
@@ -33,7 +34,7 @@
 			assert(typeof o === 'object', 'invoke only takes objects');
 			assert(typeof o.f === 'string', 'invoke object requires a string f parameter');
 			assert(typeof window[o.f] === 'function', 'function not found ' + o.f);
-			if (!isHistory) assert(!equals(o,history.state), 'redundant state');
+			if (forbidRedundantState && !isHistory) assert(!equals(o,history.state), 'redundant state');
 
 			var f = window[o.f];
 			f(o);
@@ -96,12 +97,24 @@
 	</script>
 	<p>For an SPA, the function we want to invoke is a view state with some parameter that will help an ajax call get the rest of the data we need. This is simple when we only have a single view state.</p>
 	<script>
-		var users = [{name: 'alice'},{name: 'bob'}];
+		var users = [{name: 'alice', weight:100},{name: 'bob', weight:200}];
 		function user(o){
 			assert(typeof o.id === 'number', 'user requires a numeric id');
-			assert(o.id < users.length, 'id must be a valid index < user length: ' + users.length);
-			var user = users[o.id]; //get
-			console.log(user); //render
+			if (typeof o.user === 'object'){
+				renderUser(o.user);
+				return;
+			}
+			getUserForID(o.id, function(user){
+				renderUser(user);
+				o.user = user;
+			});
+		}
+		function getUserForID(id, cb){
+			assert(id < users.length, 'id must be a valid index < user length: ' + users.length);
+			cb(users[id]); 
+		}
+		function renderUser(user){
+			console.log(user);
 		}
 	</script>
 	<div onclick="eval(arguments[0].target.innerHTML)">
