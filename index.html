@@ -2,86 +2,41 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Basic Shell</title>
+	<title>Function Idea</title>
 	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script src="node_modules/markdown/lib/markdown.js"></script>
 </head>
 <body>
-	<h1>Site</h1>
-	<ol class='nav'>
-		
-	</ol>
-	<div id="output">
-		
-	</div>
-	
+	<h1>Function Idea</h1>
+	<p>Treat the URL as a function invocation. Do it in two steps: first, define a higher-order function that takes an object and invokes another function based on it's properties. E.g. ?f=foobar would yield {f:'foobar'} would invoke <i>foobar()</i>. This nicely generalizes to arguments, e.g. f=foobar&amp;a=1&amp;a=2 would yield {f:'foobar', a:1, b:2} would be <i>foobar(1,2)</i> (or perhaps better <i>foobar({a:1, b:2})</i> since we can't really do ordering.)</p>
 
+	<p>This is not just any function, of course, it's a top-level function in the application. It's something a developer might type at the command line. In general it might talk to the network, and it might affect the screen - probably both. In that sense the function should be considered a kind of <i>navigation function</i> in that these parameters are for reading only. (It generalizes to write preparation, but not to writing itself. Hopefully we'll get to that later!)</p>
+
+	<p>First things first, some simple test code. What are we talking about?</p>
 	<script>
-		var mode = 0;
-		var modes = ['hello','about'];
-		function assert(p, msg){
-			if (!p) throw 'assertion failed: ' + msg;
-		}
-		function setMode(m, d){
-			assert(modes[m], 'mode does not exist ' + m);
-			assert(typeof d=== undefined || $.isArray(d), 'd must be an array');
-			var mode = modes[m];
-			var url = '?' + mode + ',' + d.join(',');
-			var fileName = mode + '.html';
-			var title = 'Mode: ' + mode;
 
-			$.get(fileName, function(data, status, xhr){
-				assert(status === 'success','setMode cannot complete because of xhr error loading file: ' + fileName);
-				//TODO: some analyis of file to get the title.
-				history.pushState({mode: m}, title, url);
-				console.log('mode complete: ' + modes[m]);
-				var html = data; //markdown.toHTML(data);
-				$('#output').html(html);
-				mode = m;
-			});
+		function foobar(o){
+			console.log('foobar()', o);
 		}
-		function initializeNavLinks(){
-			var $nav = $('.nav');
-			$nav.html('');
-			modes.forEach(function(mode, i){
-				$('<li><a href="?' + mode + ','+ (i%2 ? i : '') +'">'+ mode +'</a></li>').appendTo($nav);
-			});
-			$('body').on('click', '.nav a', function(e){
-				var index = getModeIndexFromURL(this.href);
-				var data = getDataFromURL(this.href);
-				setMode(index, data);
-				return false;
-			});
-		}
-		function getArgsFromURL(url){
-			var result = [];
-			//we only care about what's after the ?
-			if (url.split('?').length !== 0){
-				result = url.split('?')[1].split(',');
-			} 
-			return result;
-		}
-		function getModeIndexFromModeName(m){
-			var index = modes.indexOf(m);
-			assert (index !== -1, 'mode not available ' + m );
-			return index;
-		}
-		function getModeIndexFromURL(url){
-			return getModeIndexFromModeName(getModeFromURL(url));
-		}
-		function getModeFromURL(url){
-			return getArgsFromURL(url)[0];
-		}
-		function getDataFromURL(url){
-			return getArgsFromURL(url).slice(1);
-		}
-		function main(args){
-			initializeNavLinks();
-			var initialModeIndex = getModeIndexFromModeName(args[0]);
-			var initialData = args.slice(1);
-			setMode(initialModeIndex, initialData);
-		}
-		main(getArgsFromURL(window.location.href));
+
 	</script>
+	<p>Okay we've defined a new function, <i>foobar()</i>, that takes no arguments and just prints out it's own name to the console. Let's start by invoking it with an object.</p>
+	<script>
+		function assert(p, msg){if (!p) throw 'assertion failed: ' + msg;}
+		function invoke(o){
+			assert(typeof o === 'object', 'invoke only takes objects');
+			assert(typeof o.f === 'string', 'invoke object requires a string f parameter');
+			assert(typeof window[o.f] === 'function', 'function not found ' + o.f);
+			var f = window[o.f];
+			f(o);
+		}
+	</script>
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke()</button>
+		<button>invoke({})</button>
+		<button>invoke({f:'nonsense'})</button>
+		<button>invoke({f:'foobar'})</button>
+	</div>
+	<p>Okay, that worked great. Now let's try converting a string to an object like this one. We're probably better off using a library for this, like deparam.</p>
 </body>
 </html>

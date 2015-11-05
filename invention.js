@@ -1,4 +1,5 @@
 var app = {i:0, msgs:[], pc:-1};
+
 app.render = function(){
   $('div.output').text(this.i);
   console.log(this);
@@ -25,7 +26,6 @@ function inc(i){
 inc.desc = 'increment by one';
 inc.reverse = dec;
 
-
 function dec(i){
   return i-1;
 }
@@ -34,6 +34,45 @@ dec.reverse = inc;
 function add3(i, user){
   if (user === 1) throw 'not allowed';
   return i+3;
+}
+
+function stringifyFunction(f){
+  assert (typeof f === 'function');
+  return f.toString();
+}
+function stringifyFunctionMembers(o){
+  assert (typeof o === 'object');
+  var keys = Object.keys(o);
+  var value = null;
+  keys.forEach(function(key){
+    value = o[key];
+    if (typeof value === 'function'){
+      o[key] = stringifyFunction(value); //note that this is lossy.
+    }
+  });
+  return o;
+}
+function evalFunction(str){
+  //strip out the contents of the function, then run it through a Function constructor. Return the result.
+  //remove everything before the first { and the last }
+  var result = str.replace();
+}
+function evalFunctionMembers(o){
+  assert (typeof o === 'object');
+  var TOKEN = 'function (';
+  var keys = Object.keys(o);
+  var value = null;
+  keys.forEach(function(key){
+    value = o[key];
+    if (typeof value === 'string'){
+      var f;
+      value = 'var f =' + value;
+      console.log(value, f);
+      eval(value);
+      o[key] = f;
+    }
+  });
+  return o;
 }
 
 // function observe(observer, observee){
@@ -70,7 +109,7 @@ function s(op, data, target, user){
   assert (data.hasOwnProperty(target),help + 4);
   
   assert (typeof data.msgs === 'object', 'data arg must have a msgs member');
-  assert (typeof data.render === 'function', 'data arg must have a function member');
+  assert (typeof data.render === 'function', 'data arg must have a render function member');
   if (typeof op.reverse !== 'function') console.warn('irreversable function!', op);
   
   var result = op(data[target], user);
