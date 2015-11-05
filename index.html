@@ -124,6 +124,63 @@
 		<button>invoke({f:'user', id: 0})</button>
 		<button>invoke({f:'user', id: 1})</button>
 	</div>
+	
+	<p>So there are a couple of ways to go now. First is to support multiple simultaneous invocations, which means to support multiple simultaneous states (which is what BBQ provides). Another option is to flesh out more the structure of <i>get and render</i> especially as callbacks and with caching. Another is to apply this pattern to <i>major transition state</i> in an SPA.</p>
+
+	<script>
+		//Let's make sure that we can match things properly.
+		var name = "bob";
+		var pattern  = "bo.";
+		var regExp = new RegExp(pattern);
+		var matches = regExp.test(name);
+		
+		function search(o){
+			var tests = [];
+			var results = [];
+			if (o.name) {
+				assert(typeof o.name === 'string', 'name should be a string');
+				var regExp = new RegExp(o.name);
+				var test = function(user){return regExp.test(user.name);}
+				test.regExp = regExp;
+				test.pattern = o.name;
+				tests.push(test);
+			}
+			if (o.minWeight) {
+				assert(typeof o.minWeight === 'number', 'minWeight should be a number');
+				var test = function(user){return user.weight >= o.minWeight;};
+				test.minWeight = o.minWeight;
+				tests.push(test);
+			}
+			if (o.maxWeight) {
+				assert(typeof o.maxWeight === 'number', 'maxWeight should be a number');
+				var test = function(user){return user.weight <= o.maxWeight;};
+				test.maxWeight = o.maxWeight;
+				tests.push(test);
+			}
+
+			if (tests.length === 0) results = users;
+
+			//run every test on every user
+			for (var i = 0; i < users.length; i++) {
+				var user = users[i];
+				var passedAll = true;
+				for (var j = 0; j < tests.length; j++) {
+					passedAll = passedAll && tests[j](user);
+				};
+				if (passedAll) results.push(user);
+			};
+			console.log(tests, results);
+		}
+	</script>
+	<div onclick="eval(arguments[0].target.innerHTML)">
+		<button>invoke({f:'search'})</button>
+		<button>invoke({f:'search', name:'bob'})</button>
+		<button>invoke({f:'search', name:'a.*'})</button>
+		<button>invoke({f:'search', minWeight: 110})</button>
+		<button>invoke({f:'search', maxWeight: 110})</button>
+		<button>invoke({f:'search', minWeight: 110, maxWeight: 210})</button>
+	</div>
+	
 
 </body>
 </html>
