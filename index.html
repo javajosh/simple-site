@@ -135,6 +135,7 @@
 		var matches = regExp.test(name);
 		
 		function search(o){
+			
 			var tests = [];
 			var results = [];
 			if (o.name) {
@@ -170,6 +171,7 @@
 				if (passedAll) results.push(user);
 			};
 			console.log(tests, results);
+
 		}
 	</script>
 	<div onclick="eval(arguments[0].target.innerHTML)">
@@ -180,7 +182,23 @@
 		<button>invoke({f:'search', maxWeight: 110})</button>
 		<button>invoke({f:'search', minWeight: 110, maxWeight: 210})</button>
 	</div>
-	
+
+	<p>One of the things I noticed is that when I load the page with a long URL, the function is not <i>invoke()</i>'d. Let's fix that. The basic idea is to examine the URL string on initial page load, parse it into an object, and then call invoke on (part of) it.</p>
+
+	<pre>
+		var url = window.location.search.slice(1);
+		var o1 = $.deparam(url, true);
+		console.log(url, o1);
+		invoke(o1);
+	</pre>
+	<script>
+		var url = window.location.search.slice(1);
+		var o1 = $.deparam(url, true);
+		console.log(url, o1);
+		invoke(o1);
+	</script>
+
+	<p>Well that's cool because you can <i>type</i> new states into the URL and they do exactly what you expect. For the future I'd like to write a function that infers the 'f' parameter from the names of the other parameters. I'd also like to think more about caching - not only adding data to the pushState object, but also keeping data around in the browser for a while. (This is a kind of memoization of search).</p>
 
 </body>
 </html>
