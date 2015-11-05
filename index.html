@@ -207,6 +207,7 @@
 		<button>invoke({f:'b', name:'bob'})</button>
 		<button>invoke({f:'c', name:'a.*'})</button>
 		<button>invoke({f:'d', minWeight: 110})</button>
+		<button>invoke({f:'e', name: 'josh'})</button>
 	</div>
 	<script>
 		function a(){
@@ -222,7 +223,24 @@
 			$('#output').html('Hello d');
 		}
 	</script>
-	<p>These simple functions are symbolic of the side-effects we expect from calling them. Note that for initial page load stuff to work, invoke(o1) must be called after these functions are defined. That's because script tags are, apparently, subtly different scopes.</p>
+	<p>These simple functions are symbolic of the side-effects we expect from calling them. Note that for initial page load stuff to work, invoke(o1) must be called after these functions are defined. That's because script tags are, apparently, subtly different scopes. There are other things to say, such as to note that we're essentially doing string manipulation. It's easy to see how this might not be the most efficient! Another way to get the same behavior is to a) define each component as DOM, b) do a display:none on all, then c) show the selected one. This also implies that the element will be used for interpolation, which is complex in-and-of-itself. Another option is the one that React (and virtual DOM) takes which is to regenerate completely a virtual DOM, and then carefully modify only the parts of the real DOM that have changed. Bottom line is that these components will in general need to gather more information over the network and transform it before they can even display themselves. One interesting idea is to add all the parameters that these functions need, and then rely on the page intialization to curry those functions with page resources.</p>
+
+	<script>
+		function partial(fn /*, args...*/) {
+		  var slice = Array.prototype.slice;
+		  var args = slice.call(arguments, 1);
+		  return function() {
+		    return fn.apply(this, args.concat(slice.call(arguments, 0)));
+		  };
+		}
+		//this is nice because it allows us to captural all args, and divide argument passing between two phases, init and runtime.
+		//means we can add any number of configuration parameters, set in the page, and then completed by the nav event. 
+		//Testing the function by itself, statelessly, is easy!
+		function e1(target, o){ 
+			$(target).html(o.name);
+		}
+		this.e = partial(e1, $('#output'));
+	</script>
 
 
 	<script>
