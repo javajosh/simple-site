@@ -22,6 +22,7 @@
 	<p>Okay we've defined a new function, <i>foobar()</i>, that takes no arguments and just prints out it's own name to the console. Let's start by invoking it with an object.</p>
 	<script>
 		var forbidRedundantState = true;
+		var firstRun = true;
 		function equals(a,b){
 			assert(typeof a === 'object');
 			assert(typeof b === 'object');
@@ -34,7 +35,7 @@
 			assert(typeof o === 'object', 'invoke only takes objects');
 			assert(typeof o.f === 'string', 'invoke object requires a string f parameter');
 			assert(typeof window[o.f] === 'function', 'function not found ' + o.f);
-			if (forbidRedundantState && !isHistory) assert(!equals(o,history.state), 'redundant state');
+			if (forbidRedundantState && !isHistory && !firstRun) assert(!equals(o, history.state), 'redundant state');
 
 			var f = window[o.f];
 			f(o);
@@ -229,6 +230,7 @@
 		var o1 = $.deparam(url, true);
 		console.log(url, o1);
 		invoke(o1);
+		firstRun = false;
 	</script>
 </body>
 </html>
